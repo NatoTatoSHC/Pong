@@ -32,6 +32,9 @@
                 dx: 2,
                 dy: 2
             };
+            var Afollow = false;
+            var Bfollow = false;
+
             //SETUP
             window.addEventListener("load", start);
             function start() {
@@ -49,6 +52,18 @@
                     paddleB.y -= 10;
                 } else if (event.keyCode == 40) {
                     paddleB.y += 10;
+                } else if (event.keyCode == 49) {
+                    if (Afollow) {
+                        Afollow = false;
+                    } else {
+                        Afollow = true;
+                    }
+                } else if (event.keyCode == 50) {
+                    if (Bfollow) {
+                        Bfollow = false;
+                    } else {
+                        Bfollow = true;
+                    }
                 }
             }
             //MAIN
@@ -99,6 +114,14 @@
                 } else if (objectsCollide(ball.x, ball.y, BALL_SIZE, BALL_SIZE, paddleB.x, paddleB.y, 30, 100)) {
                     ball.dx *= -1;
                     bounce.play();
+                }
+
+                //paddle follow
+                if (Afollow) {
+                    paddleA.y = (ball.y+(BALL_SIZE/2)-(100/2))
+                }
+                if (Bfollow) {
+                    paddleB.y = (ball.y+(BALL_SIZE/2)-100/2)
                 }
             }
             //DRAW
