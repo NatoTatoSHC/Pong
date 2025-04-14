@@ -2,8 +2,8 @@
     <head>
         <title>NateWorks Pong</title>
     </head>
-    <body onload="window.location.assign('https://natotatoshc.github.io/pgun');">
-        <h1>Nate Works Pong</h1>
+    <body>
+        <h1 id="maintit">Nate Works Pong</h1>
         <script>
             var canv = document.createElement("canvas");
             canv.width = 1000;
@@ -32,6 +32,10 @@
                     nuke: false,
                     random: false,
                     bells: false,
+                    bounceDate: {
+                        goto: 0,
+                        isBouncing: false
+                    }
                 }
             };
             var paddleB = {
@@ -48,6 +52,10 @@
                     nuke: false,
                     random: false,
                     bells: false,
+                    bounceDate: {
+                        goto: 0,
+                        isBouncing: false
+                    }
                 }
             };
             var ball = {
@@ -140,6 +148,11 @@
                 var alongY = sidesAreColliding(obj1Y, obj1Y+obj1H, obj2Y, obj2Y+obj2H);
                 return alongX && alongY;
             }
+            function speedIncrease() {
+                ball.dx += ((ball.dx/Math.abs(ball.dx))*0.01);
+                ball.dy += ((ball.dy/Math.abs(ball.dy))*0.01);
+                
+            }
             //UPDATE
             function update() {
                 //cheats
@@ -172,7 +185,16 @@
                             paddleA.cheats.mini = true;
                         }
                         cheatBind["1"].isDown = false;
-                    } else if (cheatBind.)
+                    } else if (cheatBind.otherKey == 66) {
+                        if (paddleA.cheats.bounce) {
+                            paddleA.cheats.bounce = false;
+                            alert("off");
+                        } else {
+                            paddleA.cheats.bounce = true;
+                            alert("on");
+                        }
+                        cheatBind["1"].isDown = false;
+                    }
                     
                 }
                 if (paddleA.cheats.large) {
@@ -185,6 +207,23 @@
                 } else {
                     paddleB.height = 100;
                 }
+                if (paddleA.cheats.bounce && !paddleA.cheats.bounceDate.isBouncing) {
+                    if (ball.x < 500) {
+                        paddleA.cheats.bounceDate.goto = ball.dx * -1;
+                        paddleA.cheats.bounceDate.isBouncing = true;
+                    }
+                }
+                if (paddleA.cheats.bounceDate.isBouncing) {
+                    if (ball.dx = paddleA.cheats.bounceDate.goto) {
+                        paddleA.cheats.bounceDate.isBouncing = false;
+                    } else {
+                        ball.dx += paddleA.cheats.bounceDate.goto*.01;
+                    }
+                }
+
+
+
+
 
                 //move ball
                 ball.x += ball.dx;
@@ -195,36 +234,33 @@
                     ball.dx *= -1;
                     bounce.play();
                     paddleB.score += 1;
-                    ball.dx *= dynInc;
-                    ball.dy *= dynInc;
+                    speedIncrease();
                 } else if (ball.x >= 1000-BALL_SIZE) {
                     ball.dx *= -1;
                     bounce.play();
                     paddleA.score += 1;
-                    ball.dx *= dynInc;
-                    ball.dy *= dynInc;
+                    speedIncrease();
                 }
                 if (ball.y <= 0) {
                     ball.dy *= -1;
                     bounce.play();
-                    ball.dx *= dynInc;
-                    ball.dy *= dynInc;
+                    speedIncrease();
                 } else if (ball.y >= 500-BALL_SIZE) {
                     ball.dy *= -1;
                     bounce.play();
-                    ball.dx *= dynInc;
-                    ball.dy *= dynInc;
+                    speedIncrease();
                 }
                 if (objectsCollide(ball.x, ball.y, BALL_SIZE, BALL_SIZE, paddleA.x, paddleA.y, 30, paddleA.height) && !paddleB.cheats.transparency) {
+                    ball.x += 3;
                     ball.dx *= -1;    
                     bounce.play();
-                    ball.dx *= dynInc;
-                    ball.dy *= dynInc;
+                    speedIncrease();
                 } else if (objectsCollide(ball.x, ball.y, BALL_SIZE, BALL_SIZE, paddleB.x, paddleB.y, 30, paddleB.height) && !paddleA.cheats.transparency) {
+                    speedIncrease();
+                    ball.x -= 3;
                     ball.dx *= -1;
                     bounce.play();
-                    ball.dx *= dynInc;
-                    ball.dy *= dynInc;
+                    
                 }
 
                 //paddle follow
